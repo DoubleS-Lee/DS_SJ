@@ -1,0 +1,21 @@
+# API Keys and Secrets
+.env
+
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build and Temp
+dist/
+build/
+.tmp/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Settings
+.vscode/
+
+# Other ignored files
+script.js

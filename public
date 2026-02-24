@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>귀멸의 칼날 사주 & MBTI 매칭</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Libraries (CDN) -->
+    
+    <!-- 2. Google Generative AI -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+
+    <!-- 3. html2canvas (Image Save) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- 4. Kakao SDK -->
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlvy7e88mC4uS5rJWpnRyd5q1a" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <div class="background-overlay"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <h1>귀멸의 사주</h1>
+            <p>내 운명과 연결된 호흡은?</p>
+        </header>
+
+        <!-- Input Section -->
+        <section id="input-section" class="glass-panel">
+            <form id="saju-form">
+                <div class="form-group">
+                    <label>이름 (닉네임)</label>
+                    <input type="text" id="username" placeholder="홍길동" required>
+                </div>
+                
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>생년월일</label>
+                        <input type="date" id="birthdate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>달력</label>
+                        <select id="calendar-type">
+                            <option value="solar">양력</option>
+                            <option value="lunar">음력</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>태어난 시간</label>
+                        <input type="time" id="birthtime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>성별</label>
+                        <select id="gender">
+                            <option value="male">남성</option>
+                            <option value="female">여성</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>MBTI</label>
+                    <select id="mbti">
+                        <option value="ISTJ">ISTJ (소금형)</option>
+                        <option value="ISFJ">ISFJ (권력형)</option>
+                        <option value="INFJ">INFJ (예언자형)</option>
+                        <option value="INTJ">INTJ (과학자형)</option>
+                        <option value="ISTP">ISTP (백과사전형)</option>
+                        <option value="ISFP">ISFP (성인군자형)</option>
+                        <option value="INFP">INFP (잔다르크형)</option>
+                        <option value="INTP">INTP (아이디어형)</option>
+                        <option value="ESTP">ESTP (활동가형)</option>
+                        <option value="ESFP">ESFP (사교형)</option>
+                        <option value="ENFP">ENFP (스파크형)</option>
+                        <option value="ENTP">ENTP (발명가형)</option>
+                        <option value="ESTJ">ESTJ (사업가형)</option>
+                        <option value="ESFJ">ESFJ (친선도모형)</option>
+                        <option value="ENFJ">ENFJ (언변능숙형)</option>
+                        <option value="ENTJ">ENTJ (지도자형)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary">호흡 분석 시작</button>
+            </form>
+        </section>
+
+        <!-- Loading Section -->
+        <section id="loading-section" class="hidden">
+            <div class="loader-content">
+                <div class="breathing-circle"></div>
+                <p>전집중 호흡으로 분석 중...</p>
+                <p class="sub-text">오행의 흐름을 읽고 있습니다.</p>
+            </div>
+        </section>
+
+        <!-- Result Section -->
+        <section id="result-section" class="hidden">
+            
+            <!-- The Card (Capture Target) -->
+            <div id="photocard-container">
+                <div id="photocard" class="card-frame">
+                    <!-- Rarity Badge -->
+                    <div class="rarity-badge" id="card-rarity">SSR</div>
+                    <div class="new-badge">NEW!</div>
+
+                    <!-- Character Image Area -->
+                    <div class="character-image-wrapper">
+                        <img id="character-img" src="" alt="Character">
+                        <div class="image-overlay"></div>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="card-content">
+                        <h2 id="card-title" class="card-title">피도 눈물도 없는 무잔</h2>
+                        <h3 id="card-name" class="card-name">키부츠지 무잔</h3>
+                        
+                        <div class="card-desc-box">
+                            <p id="card-desc">"너, 완벽주의자지? 계획대로 안 되면 세상 무너지는 줄 알잖아. 남들 지적하기 전에 거울부터 봐."</p>
+                        </div>
+
+                        <div class="chemistry-box">
+                            <div class="chem-item good">
+                                <span class="label">Good</span>
+                                <span id="chem-good" class="val">탄지로</span>
+                            </div>
+                            <div class="chem-item bad">
+                                <span class="label">Bad</span>
+                                <span id="chem-bad" class="val">요리이치</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <span>Demon Slayer Saju Analysis</span>
+                            <span id="user-info-display">홍길동 • 1996.05.05</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Visual Effects Layers -->
+                    <div class="effect-layer"></div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button id="btn-download" class="btn-secondary">⬇ 이미지 저장</button>
+                <button id="btn-share" class="btn-kakao">💬 카카오톡 공유</button>
+                <button id="btn-retry" class="btn-text">↺ 다시하기</button>
+            </div>
+        </section>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

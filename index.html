@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>귀멸의 칼날 사주 & MBTI 매칭</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlvy7e88mC4uS5rJWpnRyd5q1a" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    <div class="app-container">
+        <header class="main-header">
+            <h1>귀멸의 사주</h1>
+            <p>내 운명과 연결된 호흡은?</p>
+        </header>
+
+        <section id="input-section" class="glass-panel">
+            <form id="saju-form">
+                <div class="form-group">
+                    <label>이름 (닉네임)</label>
+                    <input type="text" id="username" placeholder="홍길동" required>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>생년월일</label>
+                        <input type="date" id="birthdate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>달력</label>
+                        <select id="calendar-type">
+                            <option value="solar">양력</option>
+                            <option value="lunar">음력</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label>태어난 시간</label>
+                        <input type="time" id="birthtime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>성별</label>
+                        <select id="gender">
+                            <option value="male">남성</option>
+                            <option value="female">여성</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>MBTI</label>
+                    <select id="mbti">
+                        <option value="ISTJ">ISTJ</option>
+                        <option value="ISFJ">ISFJ</option>
+                        <option value="INFJ">INFJ</option>
+                        <option value="INTJ">INTJ</option>
+                        <option value="ISTP">ISTP</option>
+                        <option value="ISFP">ISFP</option>
+                        <option value="INFP">INFP</option>
+                        <option value="INTP">INTP</option>
+                        <option value="ESTP">ESTP</option>
+                        <option value="ESFP">ESFP</option>
+                        <option value="ENFP">ENFP</option>
+                        <option value="ENTP">ENTP</option>
+                        <option value="ESTJ">ESTJ</option>
+                        <option value="ESFJ">ESFJ</option>
+                        <option value="ENFJ">ENFJ</option>
+                        <option value="ENTJ">ENTJ</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">호흡 분석 시작</button>
+            </form>
+        </section>
+
+        <section id="loading-section" class="hidden">
+            <div class="loader-content">
+                <div class="breathing-circle"></div>
+                <p>전집중 호흡으로 분석 중...</p>
+            </div>
+        </section>
+
+        <section id="result-section" class="hidden">
+            <div id="photocard-container">
+                <div id="photocard" class="card-frame">
+                    <div class="rarity-badge" id="card-rarity">SSR</div>
+                    <div class="character-image-wrapper">
+                        <img id="character-img" src="" alt="Character">
+                        <div class="image-overlay"></div>
+                    </div>
+                    <div class="card-top">
+                        <h3 id="card-name" class="card-name"></h3>
+                    </div>
+                    <div class="card-bottom">
+                        <h2 id="card-title" class="card-title"></h2>
+                        <div class="card-footer">
+                            <span id="user-info-display" class="footer-left"></span>
+                            <span class="footer-right">귀멸의 사주 by 월덕요정</span>
+                        </div>
+                    </div>
+                    <div class="effect-layer"></div>
+                </div>
+            </div>
+            <div id="additional-info" class="additional-info">
+                <div class="saju-desc-box">
+                    <h3>나의 사주 해석</h3>
+                    <p id="card-desc"></p>
+                </div>
+                <div class="chemistry-box">
+                    <div class="chem-item good">
+                        <span class="label">Good 궁합</span>
+                        <span id="chem-good" class="val"></span>
+                    </div>
+                    <div class="chem-item bad">
+                        <span class="label">Bad 궁합</span>
+                        <span id="chem-bad" class="val"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button id="btn-download" class="btn-secondary">⬇ 이미지 저장</button>
+                <button id="btn-share" class="btn-kakao">💬 카카오톡 공유</button>
+                <button id="btn-retry" class="btn-text">↺ 다시하기</button>
+            </div>
+        </section>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
