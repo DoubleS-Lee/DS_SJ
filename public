@@ -117,8 +117,7 @@
             <!-- The Card (Capture Target) -->
             <div id="photocard-container">
                 <div id="photocard" class="card-frame">
-                    <!-- Rarity Badge -->
-                    <div class="rarity-badge" id="card-rarity">SSR</div>
+                    <!-- Rarity Badge removed -->
                     <div class="new-badge">NEW!</div>
 
                     <!-- Character Image Area -->
