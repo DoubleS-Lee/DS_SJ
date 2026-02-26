@@ -23,17 +23,49 @@ const elements = {
 // Character Image Mapping
 // 파일명과 매칭되는 키워드 설정 (한글 깨짐 방지)
 const characterImages = {
+    '카마도 탄지로': './images/tanjiro.png',
     '탄지로': './images/tanjiro.png',
-    '네즈코': './images/nezuko.png', // 이미지 없음, default로 처리됨
-    '젠이츠': './images/zenitsu.png', // 이미지 없음
-    '이노스케': './images/inosuke.png', // 이미지 없음
+    '카마도 네즈코': './images/nezuko.png',
+    '네즈코': './images/nezuko.png',
+    '키부츠지 무잔': './images/mujan.png',
+    '무잔': './images/mujan.png',
+    '아가츠마 젠이츠': './images/zenitsu.png',
+    '젠이츠': './images/zenitsu.png',
+    '하시비라 이노스케': './images/inosuke.png',
+    '이노스케': './images/inosuke.png',
+    '우부야시키 카가야': './images/kagaya.png',
+    '카가야': './images/kagaya.png',
+    '토미오카 기유': './images/giyu.png',
     '기유': './images/giyu.png',
-    '시노부': './images/shinobu.png', // 이미지 없음
-    '렌고쿠': './images/rengoku.png', // 이미지 없음
-    '텐겐': './images/tengen.png', // 이미지 없음
-    '무잔': './images/mujan.png', // 파일명 mujan.png
-    '도우마': './images/douma.png', // 이미지 없음
-    '아카자': './images/akaza.png', // 이미지 없음
+    '렌고쿠 쿄쥬로': './images/rengoku.png',
+    '렌고쿠': './images/rengoku.png',
+    '코쵸우 시노부': './images/shinobu.png',
+    '시노부': './images/shinobu.png',
+    '히메지마 교메이': './images/gyomei.png',
+    '교메이': './images/gyomei.png',
+    '시나즈가와 사네미': './images/sanemi.png',
+    '사네미': './images/sanemi.png',
+    '이구로 오바나이': './images/obanai.png',
+    '오바나이': './images/obanai.png',
+    '토키토 무이치로': './images/muichiro.png',
+    '무이치로': './images/muichiro.png',
+    '칸로지 미츠리': './images/mitsuri.png',
+    '미츠리': './images/mitsuri.png',
+    '우즈이 텐겐': './images/tengen.png',
+    '텐겐': './images/tengen.png',
+    '타마요': './images/tamayo.png',
+    '유시로': './images/yushiro.png',
+    '코쿠시보': './images/kokushibo.png',
+    '도우마': './images/douma.png',
+    '아카자': './images/akaza.png',
+    '굣코': './images/gyokko.png',
+    '다키': './images/daki.png',
+    '한텐구': './images/hantengu.png',
+    '규타로': './images/gyutaro.png',
+    '나키메': './images/nakime.png',
+    '카이가쿠': './images/kaigaku.png',
+    '엔무': './images/enmu.png',
+    '루이': './images/rui.png',
     'default': './images/giyu.png' // 기본값은 기유로 설정 (이미지가 3개뿐이므로)
 };
 
