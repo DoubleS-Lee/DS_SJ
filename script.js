@@ -74,6 +74,9 @@ const characterImages = {
 };
 
 function getCharacterImage(text) {
+    // 테스트를 위해 모든 이미지를 default.png로 고정합니다. (나중에 복구 가능)
+    return './images/default.png';
+    /*
     let imgUrl = characterImages['default'];
     // 텍스트에 키워드가 포함되어 있는지 확인
     for (const [key, url] of Object.entries(characterImages)) {
@@ -88,12 +91,33 @@ function getCharacterImage(text) {
         }
     }
     return imgUrl;
+    */
 }
 
 // ------------------------------------------------------------------
 // 3. Server API Interaction
 // ------------------------------------------------------------------
+// 스타일 테스트용 Mock 모드 (true로 설정하면 API를 호출하지 않음)
+const MOCK_MODE = true;
+
 async function analyzeDestiny(userInfo) {
+    if (MOCK_MODE) {
+        console.log("Mock Mode Enabled: Returning dummy data without calling API.");
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve({
+                    title: "차가운 흙 속에서 빛나는 예리한 보석",
+                    character_name: "우부야시키 카가야", // 캐릭터 이름은 그대로 둠
+                    description: "이서희님은 마치 차가운 흙 속에 묻혀있지만, 그 안에서 빛을 발하는 예리한 보석과 같습니다. 가장 강력한 토(土)의 기운은 이서희님에게 흔들림 없는 굳건함과 묵직한 안정감을 부여하며, 어떤 상황에서도 자신의 중심을 잃지 않게 합니다. 여기에 금(金)의 예리함과 섬세함이 더해져, 이서희님은 목표를 향해 감정을 배제한 채 오직 효율과 완벽을 추구하는 천재적인 면모를 지니고 있습니다. 겉으로는 차분하고 무심해 보일 수 있지만, 내면에는 누구보다 강한 집중력과 날카로운 통찰력을 품고 있습니다. 이러한 기질은 이서희님을 자신만의 길을 묵묵히 걸어가는 독보적인 존재로 만듭니다.",
+                    chemistry: {
+                        good: "렌고쿠 쿄쥬로 : 렌고쿠 쿄쥬로의 따뜻하고 긍정적인 태양 같은 기운은 이서희님의 예리한 금(金) 기운을 더욱 빛나게 하고, 묵직한 토(土) 기운에 생명력을 불어넣어 조화로운 시너지를 만들어낼 것입니다.",
+                        bad: "시나즈가와 사네미 : 시나즈가와 사네미의 거칠고 파괴적인 무쇠 같은 기운은 이서희님의 섬세한 금(金) 기운과 충돌하여 서로에게 상처를 줄 수 있으며, 안정적인 토(土) 기운을 흔들어 불안정하게 만들 수 있습니다."
+                    }
+                });
+            }, 1000); // 로딩 화면을 보기 위한 1초 대기
+        });
+    }
+
     try {
         console.log("Sending data to server:", { userInfo });
         const response = await fetch('/api/analyze', {

@@ -37,6 +37,11 @@ body {
     display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
 
+.main-header {
+    text-align: center;
+    width: 100%;
+}
+
 .main-header h1 {
     font-family: 'Black Han Sans', sans-serif;
     font-size: 3rem;
@@ -76,45 +81,22 @@ input, select {
 .hidden { display: none !important; }
 
 #photocard {
-    width: 100%; aspect-ratio: 1080 / 1350;
+    width: 100%; aspect-ratio: 1080 / 1080;
     position: relative; background: #000;
     border-radius: 15px; overflow: hidden;
     box-shadow: 0 0 50px rgba(0,0,0,0.8);
 }
 
-.character-image-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-#character-img { width: 100%; height: 100%; object-fit: cover; }
+.character-image-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
+#character-img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .image-overlay {
     position: absolute; bottom: 0; left: 0; width: 100%; height: 60%;
-    background: linear-gradient(to top, rgba(0,0,0,1) 0%, transparent 100%);
+    background: none;
 }
 
 .card-top {
-    position: absolute; top: 20px; right: 20px; z-index: 10;
-    text-align: right;
-}
-
-.card-bottom {
-    position: absolute; bottom: 0; left: 0; width: 100%; padding: 25px; z-index: 10;
-    display: flex; flex-direction: column; justify-content: flex-end;
-}
-
-/* Fix 6: Reduce font weight of one-line description (card-title) */
-/* Fix 4: White text, Black Shadow instead of Stroke */
-.card-title { 
-    font-family: 'Noto Sans KR', sans-serif; 
-    font-weight: 700; 
-    font-size: 1.15rem; 
-    margin-bottom: 15px; 
-    color: #ffffff; 
-    /* Removed text-stroke due to rendering issues */
-    /* -webkit-text-stroke: 0.8px #000000; */
-    /* Strong shadow to simulate outline */
-    text-shadow: 
-        2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
-        0 0 5px rgba(0,0,0,0.8);
-    line-height: 1.4; 
-    word-break: keep-all; 
+    position: absolute; top: 18px; left: 0; width: 100%; z-index: 10;
+    text-align: center;
 }
 
 /* Fix 5: Modernize Name Style */
@@ -133,18 +115,24 @@ input, select {
     background: none; 
     -webkit-background-clip: border-box; 
     padding: 0; 
-    display: inline-block; 
+    display: none; 
     border-bottom: none; 
     letter-spacing: -1px; 
     transform: skewX(-5deg); 
 }
 
+.card-bottom {
+    position: absolute; bottom: 0; left: 0; width: 100%; padding: 25px 25px 13px 25px; z-index: 10;
+    display: flex; flex-direction: column; justify-content: flex-end;
+}
+
 /* Fix 4: Footer text color */
 .card-footer { 
     display: flex; 
-    justify-content: space-between; 
+    justify-content: flex-end; 
     align-items: flex-end; 
     width: 100%; 
+    position: relative;
     font-size: 0.8rem; 
     color: #ffffff; 
     /* Removed text-stroke */
@@ -154,18 +142,46 @@ input, select {
         1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     font-weight: 700; 
     opacity: 1; 
+    margin-bottom: 10px; /* 푸터를 타이틀 위로 올리기 위한 여백 */
 }
-.footer-left { text-align: left; }
-.footer-right { text-align: right; font-style: italic; }
+.footer-left { position: absolute; left: 50%; transform: translate(-50%, 9px); text-align: center; width: max-content; }
+.footer-right { text-align: right; font-style: italic; font-size: 0.5rem; transform: translate(-10px, 13px); }
+
+/* Fix 6: Reduce font weight of one-line description (card-title) */
+/* Fix 4: White text, Black Shadow instead of Stroke */
+.card-title { 
+    font-family: 'Noto Sans KR', sans-serif; 
+    font-weight: 700; 
+    font-size: 1.0rem; 
+    margin-bottom: 0; /* 타이틀을 가장 아래로 내리기 위해 마진 제거 */
+    text-align: center; /* 가운데 정렬 */
+    color: #ffffff; 
+    /* Removed text-stroke due to rendering issues */
+    /* -webkit-text-stroke: 0.8px #000000; */
+    /* Strong shadow to simulate outline */
+    text-shadow: 
+        2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
+        0 0 5px rgba(0,0,0,0.8);
+    line-height: 1.4; 
+    word-break: keep-all; 
+}
 
 .additional-info { width: 100%; margin-top: 15px; }
-.saju-desc-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 15px; backdrop-filter: blur(5px); border: 1px solid var(--glass-border); }
-.saju-desc-box h3 { font-size: 1.1rem; color: var(--primary); margin-bottom: 10px; text-align: center; }
+.saju-desc-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 15px; backdrop-filter: blur(5px); border: 1px solid var(--glass-border); aspect-ratio: 1080 / 1080; display: flex; flex-direction: column; justify-content: center; }
+.saju-desc-box h3 { 
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 1.8rem; 
+    font-weight: 700;
+    color: #ffb8b8;
+    margin-bottom: 15px; 
+    text-align: center; 
+    letter-spacing: 1px;
+}
 .saju-desc-box p { font-size: 0.95rem; line-height: 1.6; word-break: keep-all; }
 
-.chemistry-box { display: flex; gap: 15px; margin-bottom: 15px; }
+.chemistry-box { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
 .chem-item { 
-    flex: 1; 
+    flex: 1;
     background-color: rgba(0,0,0,0.5); 
     background-size: cover; 
     background-position: center top; /* Center Top alignment for portraits */
@@ -177,7 +193,7 @@ input, select {
     border: 1px solid rgba(255,255,255,0.1); 
     position: relative; 
     overflow: hidden; 
-    min-height: 100px; /* Ensure visibility */
+    aspect-ratio: 1080 / 1080;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -196,9 +212,8 @@ input, select {
 .btn-kakao { background: #fee500; color: #3c1e1e; }
 .btn-text { background: transparent; color: #b2bec3; border: 1px solid #b2bec3; }
 
-/* Fix 3: Thicker Borders */
-/* Increased from 6/5/4/3 to 12/10/8/6 or similar significantly thicker */
-.card-frame[data-rarity="UR"] { border: 10px solid var(--color-ur); }
-.card-frame[data-rarity="SSR"] { border: 10px solid var(--color-ssr); }
-.card-frame[data-rarity="SR"] { border: 10px solid var(--color-sr); }
-.card-frame[data-rarity="R"] { border: 10px solid var(--color-r); }
+/* Fix 3: Thicker Borders (Removed for testing) */
+.card-frame[data-rarity="UR"] { }
+.card-frame[data-rarity="SSR"] { }
+.card-frame[data-rarity="SR"] { }
+.card-frame[data-rarity="R"] { }
