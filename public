@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>귀멸의 칼날 사주 & MBTI 매칭</title>
+    <title>귀멸의 칼날 사주 매칭</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,28 +74,6 @@
                             <option value="female">여성</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label>MBTI</label>
-                    <select id="mbti">
-                        <option value="ISTJ">ISTJ (소금형)</option>
-                        <option value="ISFJ">ISFJ (권력형)</option>
-                        <option value="INFJ">INFJ (예언자형)</option>
-                        <option value="INTJ">INTJ (과학자형)</option>
-                        <option value="ISTP">ISTP (백과사전형)</option>
-                        <option value="ISFP">ISFP (성인군자형)</option>
-                        <option value="INFP">INFP (잔다르크형)</option>
-                        <option value="INTP">INTP (아이디어형)</option>
-                        <option value="ESTP">ESTP (활동가형)</option>
-                        <option value="ESFP">ESFP (사교형)</option>
-                        <option value="ENFP">ENFP (스파크형)</option>
-                        <option value="ENTP">ENTP (발명가형)</option>
-                        <option value="ESTJ">ESTJ (사업가형)</option>
-                        <option value="ESFJ">ESFJ (친선도모형)</option>
-                        <option value="ENFJ">ENFJ (언변능숙형)</option>
-                        <option value="ENTJ">ENTJ (지도자형)</option>
-                    </select>
                 </div>
 
                 <button type="submit" class="btn-primary">호흡 분석 시작</button>
