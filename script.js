@@ -1,6 +1,18 @@
 // ------------------------------------------------------------------
 // 1. Configuration & Global State
 // ------------------------------------------------------------------
+// !!! 카카오 디벨로퍼스에서 발급받은 'JavaScript 키'를 아래에 넣으세요 !!!
+try {
+    if (window.Kakao && !window.Kakao.isInitialized()) {
+        window.Kakao.init('f36810396616a494fcc94b271ab7e2ed'); // 예: '1234567890abcdef...'
+        console.log("Kakao SDK Initialized");
+    } else if (!window.Kakao) {
+        console.warn("Kakao SDK 로드 실패: 광고 차단기 등의 문제일 수 있습니다.");
+    }
+} catch (e) {
+    console.error("Kakao SDK Initialization Error:", e);
+}
+
 const elements = {
     form: document.getElementById('saju-form'),
     inputSection: document.getElementById('input-section'),
@@ -15,8 +27,14 @@ const elements = {
     chemGood: document.getElementById('chem-good'),
     chemBad: document.getElementById('chem-bad'),
     userInfoDisplay: document.getElementById('user-info-display'),
-    btnDownload: document.getElementById('btn-download'),
-    btnShare: document.getElementById('btn-share'),
+    btnDownloadCard: document.getElementById('btn-download-card'),
+    btnDownloadDesc: document.getElementById('btn-download-desc'),
+    btnDownloadGood: document.getElementById('btn-download-good'),
+    btnDownloadBad: document.getElementById('btn-download-bad'),
+    btnShareLink: document.getElementById('btn-share-link'),
+    btnShareKakao: document.getElementById('btn-share-kakao'),
+    btnShareFb: document.getElementById('btn-share-fb'),
+    btnShareX: document.getElementById('btn-share-x'),
     btnRetry: document.getElementById('btn-retry'),
 };
 
@@ -64,7 +82,7 @@ const characterImages = {
     '아카자': './images/akaza.png',
     '굣코': './images/gyokko.png',
     '다키': './images/daki.png',
-    '한텐구': './images/hantengu.png',
+    '조하쿠텐': './images/zohakuten.png',
     '규타로': './images/gyutaro.png',
     '나키메': './images/nakime.png',
     '카이가쿠': './images/kaigaku.png',
@@ -216,7 +234,7 @@ function renderResult(data, rarity) {
 
     // Main Image
     const mainImgUrl = getCharacterImage(data.character_name);
-    elements.characterImg.src = mainImgUrl;
+    playCharacterAnimation(mainImgUrl);
 
     // Chemistry Background Images (Good/Bad Compatibility)
     // 요청사항: Good/Bad 궁합의 배경에도 업로드 된 사진(여기서는 매칭된 캐릭터 이미지)을 넣기
@@ -233,13 +251,15 @@ function renderResult(data, rarity) {
     const chemBadBox = document.querySelector('.chem-item.bad');
     
     // 배경 이미지 설정
+    // html2canvas에서 background-blend-mode를 잘 지원하지 않으므로, 
+    // css 대신 JS에서 linear-gradient를 함께 적용해 어두운 오버레이를 만듭니다.
     if (goodImgUrl) {
-        chemGoodBox.style.backgroundImage = `url('${goodImgUrl}')`;
+        chemGoodBox.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${goodImgUrl}')`;
         chemGoodBox.classList.add('has-bg');
     }
     
     if (badImgUrl) {
-        chemBadBox.style.backgroundImage = `url('${badImgUrl}')`;
+        chemBadBox.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${badImgUrl}')`;
         chemBadBox.classList.add('has-bg');
     }
 
@@ -253,13 +273,256 @@ elements.btnRetry.addEventListener('click', () => {
     elements.resultSection.classList.add('hidden');
     elements.inputSection.classList.remove('hidden');
     elements.form.reset();
+    
+    // 다운로드 버튼 상태 초기화
+    elements.btnDownloadCard.innerHTML = "캐릭터<br>카드";
+    elements.btnDownloadDesc.innerHTML = "사주<br>해석";
+    elements.btnDownloadGood.innerHTML = "Good<br>궁합";
+    elements.btnDownloadBad.innerHTML = "Bad<br>궁합";
+    [elements.btnDownloadCard, elements.btnDownloadDesc, elements.btnDownloadGood, elements.btnDownloadBad].forEach(btn => {
+        btn.classList.remove('downloaded');
+    });
 });
 
-elements.btnDownload.addEventListener('click', () => {
-    html2canvas(elements.photocard, { scale: 2, useCORS: true }).then(canvas => {
+async function downloadSection(element, filenamePrefix, buttonEl) {
+    if (!element) return;
+    
+    const timestamp = Date.now();
+    const originalText = buttonEl.innerHTML;
+    buttonEl.innerHTML = "저장 중...";
+    buttonEl.disabled = true;
+
+    try {
+        const canvas = await html2canvas(element, { 
+            scale: 5, 
+            useCORS: true,
+            backgroundColor: '#0f0c29',
+            allowTaint: true
+        });
         const link = document.createElement('a');
-        link.download = `DemonSlayer_Saju_${Date.now()}.png`;
-        link.href = canvas.toDataURL('image/png');
+        link.download = `${filenamePrefix}_${timestamp}.png`;
+        link.href = canvas.toDataURL('image/png', 1.0);
         link.click();
-    });
+        
+        buttonEl.innerHTML = "다운<br>완료";
+        buttonEl.classList.add('downloaded');
+    } catch (err) {
+        console.error("저장 중 오류 발생:", err);
+        alert("이미지 저장에 실패했습니다.");
+        buttonEl.innerHTML = originalText;
+    }
+    
+    buttonEl.disabled = false;
+}
+
+elements.btnDownloadCard.addEventListener('click', () => {
+    downloadSection(elements.photocard, 'DemonSlayer_Saju_Card', elements.btnDownloadCard);
+});
+elements.btnDownloadDesc.addEventListener('click', () => {
+    downloadSection(document.querySelector('.saju-desc-box'), 'DemonSlayer_Saju_Desc', elements.btnDownloadDesc);
+});
+elements.btnDownloadGood.addEventListener('click', () => {
+    downloadSection(document.querySelector('.chem-item.good'), 'DemonSlayer_Saju_GoodChem', elements.btnDownloadGood);
+});
+elements.btnDownloadBad.addEventListener('click', () => {
+    downloadSection(document.querySelector('.chem-item.bad'), 'DemonSlayer_Saju_BadChem', elements.btnDownloadBad);
+});
+
+// Disable right-click / long-press save image on capture area
+document.getElementById('capture-area').addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+
+// ------------------------------------------------------------------
+// 7. Animation Logic
+// ------------------------------------------------------------------
+let currentCharacterPngUrl = '';
+let isAnimating = false;
+let durationCache = {}; // WebP 재생 시간 캐싱
+
+// WebP 파일의 바이너리 데이터를 읽어 애니메이션의 총 재생 시간(ms)을 계산하는 함수
+async function getWebPAnimationDuration(url) {
+    try {
+        const response = await fetch(url);
+        const buffer = await response.arrayBuffer();
+        const dataView = new DataView(buffer);
+        
+        // Check RIFF header ('RIFF')
+        if (dataView.getUint32(0) !== 0x52494646) return null; 
+        // Check WEBP header ('WEBP')
+        if (dataView.getUint32(8) !== 0x57454250) return null; 
+        
+        let offset = 12;
+        let totalDuration = 0;
+        let hasAnimation = false;
+
+        while (offset < buffer.byteLength) {
+            const chunkId = dataView.getUint32(offset);
+            const chunkSize = dataView.getUint32(offset + 4, true); // Little endian
+            
+            // 'ANMF' (Animation Frame) chunk
+            if (chunkId === 0x414E4D46) { 
+                hasAnimation = true;
+                // Frame Duration은 ANMF 청크 데이터의 12번째 바이트부터 3바이트(24-bit little endian)에 저장됨
+                // 청크 헤더(8바이트) + 12 = 20
+                const duration = dataView.getUint8(offset + 20) | 
+                                (dataView.getUint8(offset + 21) << 8) | 
+                                (dataView.getUint8(offset + 22) << 16);
+                totalDuration += duration;
+            }
+            
+            // Move to next chunk (Header 8 bytes + Size + 1 byte padding if size is odd)
+            offset += 8 + chunkSize + (chunkSize % 2);
+        }
+        
+        return hasAnimation ? totalDuration : null;
+    } catch(e) {
+        console.error("WebP 재생 시간 추출 실패:", e);
+        return null;
+    }
+}
+
+function playCharacterAnimation(pngUrl) {
+    if (isAnimating) return;
+    
+    currentCharacterPngUrl = pngUrl;
+    isAnimating = true;
+    
+    // WEBP 파일이 PNG 파일과 동일한 이름에 확장자만 .webp일 것이라고 가정합니다.
+    const baseUrl = pngUrl.replace('.png', '.webp');
+    const animUrl = baseUrl + '?t=' + new Date().getTime();
+    
+    elements.photocard.style.cursor = 'default'; // 클릭 불가 상태 표시
+    
+    // duration을 병렬로 구함 (캐시되어 있으면 즉시 반환)
+    const getDuration = async () => {
+        if (durationCache[baseUrl]) return durationCache[baseUrl];
+        const dur = await getWebPAnimationDuration(baseUrl);
+        if (dur) durationCache[baseUrl] = dur;
+        return dur || 4000;
+    };
+
+    // onload 이벤트에서 타이머를 시작하여, 이미지가 실제로 화면에 로드된 시점부터 재생 시간을 계산함
+    elements.characterImg.onload = async () => {
+        elements.characterImg.onload = null; // 중복 실행 방지
+        
+        const duration = await getDuration();
+        console.log(`WebP 재생 시간: ${duration}ms`);
+        
+        setTimeout(() => {
+            // 이미지가 중간에 바뀌지 않았을 때만 PNG로 원복
+            if (elements.characterImg.src.includes('?t=')) {
+                elements.characterImg.src = pngUrl;
+                isAnimating = false;
+                elements.photocard.style.cursor = 'pointer'; // 클릭 기능 다시 활성화
+            }
+        }, duration);
+    };
+    
+    // 즉시 이미지 src를 변경하여 다운로드 및 렌더링 시작 (await 블로킹 없음)
+    elements.characterImg.src = animUrl;
+}
+
+// 포토카드 클릭 시 애니메이션 다시 재생
+elements.photocard.addEventListener('click', () => {
+    if (currentCharacterPngUrl && !isAnimating) {
+        playCharacterAnimation(currentCharacterPngUrl);
+    }
+});
+
+// ------------------------------------------------------------------
+// 8. Share functionality
+// ------------------------------------------------------------------
+const pageUrl = window.location.href;
+
+elements.btnShareLink.addEventListener('click', async () => {
+    try {
+        // 1. 최신 Clipboard API 시도 (HTTPS 환경 필요)
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(pageUrl);
+            alert('링크가 복사되었습니다!');
+            return;
+        }
+        throw new Error('Clipboard API not available or not secure');
+    } catch (err) {
+        // 2. 모바일 브라우저나 HTTP 환경을 위한 Fallback (textarea 활용)
+        try {
+            const textArea = document.createElement("textarea");
+            textArea.value = pageUrl;
+            
+            // 화면에 보이지 않게 처리
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            
+            document.body.appendChild(textArea);
+            
+            // 모바일 iOS를 위한 선택 처리
+            if (navigator.userAgent.match(/ipad|iphone/i)) {
+                const range = document.createRange();
+                range.selectNodeContents(textArea);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                textArea.setSelectionRange(0, 999999);
+            } else {
+                textArea.select();
+            }
+
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            if (successful) {
+                alert('링크가 복사되었습니다!');
+            } else {
+                throw new Error('Fallback copy failed');
+            }
+        } catch (fallbackErr) {
+            console.error('Fallback copy error:', fallbackErr);
+            alert('링크 복사를 지원하지 않는 브라우저입니다.\n주소창의 링크를 직접 복사해주세요.');
+        }
+    }
+});
+
+elements.btnShareKakao.addEventListener('click', () => {
+    if (!window.Kakao) {
+        alert('카카오톡 공유 API를 불러올 수 없습니다.\n광고 차단기(AdBlock)를 사용 중이라면 해제 후 다시 시도해주세요.');
+        return;
+    }
+
+    if (!window.Kakao.isInitialized()) {
+        try {
+            window.Kakao.init('f36810396616a494fcc94b271ab7e2ed');
+        } catch (e) {
+            console.error('Kakao Init Error in click handler:', e);
+            alert('카카오톡 공유 기능 초기화에 실패했습니다.\nJavaScript 키가 올바른지, 플랫폼(도메인) 등록이 되었는지 확인해주세요.');
+            return;
+        }
+    }
+
+    if (window.Kakao.isInitialized()) {
+        window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+                title: '귀멸의 사주',
+                description: '내 운명과 연결된 호흡은?',
+                imageUrl: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5980?auto=format&fit=crop&q=80',
+                link: {
+                    mobileWebUrl: pageUrl,
+                    webUrl: pageUrl,
+                },
+            },
+        });
+    } else {
+        alert('카카오톡 공유 API가 아직 연결되지 않았습니다.');
+    }
+});
+
+elements.btnShareFb.addEventListener('click', () => {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`, '_blank', 'width=600,height=400');
+});
+
+elements.btnShareX.addEventListener('click', () => {
+    const text = '귀멸의 사주 - 내 운명과 연결된 호흡은?';
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(pageUrl)}`, '_blank', 'width=600,height=400');
 });

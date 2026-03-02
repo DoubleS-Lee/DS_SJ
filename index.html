@@ -11,7 +11,7 @@
 
     <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l+xbElFSnPZ2rOaPrU//2FF5B4LB8FiX5q4fXYTlvy7e88mC4uS5rJWpnRyd5q1a" crossorigin="anonymous"></script>
+    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"></script>
 </head>
 <body>
     <div class="background-overlay"></div>
@@ -65,44 +65,71 @@
         </section>
 
         <section id="result-section" class="hidden">
-            <div id="photocard-container">
-                <div id="photocard" class="card-frame">
-                    <div class="character-image-wrapper">
-                        <img id="character-img" src="" alt="Character">
-                        <div class="image-overlay"></div>
-                    </div>
-                    <div class="card-top">
-                        <h3 id="card-name" class="card-name"></h3>
-                    </div>
-                    <div class="card-bottom">
-                        <div class="card-footer">
-                            <span id="user-info-display" class="footer-left"></span>
-                            <span class="footer-right"> by 월덕요정</span>
+            <div id="capture-area">
+                <div id="photocard-container">
+                    <div id="photocard" class="card-frame">
+                        <div class="character-image-wrapper">
+                            <img id="character-img" src="" alt="Character">
+                            <div class="image-overlay"></div>
                         </div>
-                        <h2 id="card-title" class="card-title"></h2>
+                        <div class="card-top">
+                            <h3 id="card-name" class="card-name"></h3>
+                        </div>
+                        <div class="card-bottom">
+                            <div class="card-footer">
+                                <span id="user-info-display" class="footer-left"></span>
+                            </div>
+                            <h2 id="card-title" class="card-title"></h2>
+                        </div>
+                        <div class="effect-layer"></div>
+                        <span class="photocard-watermark">by 월덕요정</span>
                     </div>
-                    <div class="effect-layer"></div>
                 </div>
-            </div>
-            <div id="additional-info" class="additional-info">
-                <div class="saju-desc-box">
-                    <h3>나의 사주 해석</h3>
-                    <p id="card-desc"></p>
-                </div>
-                <div class="chemistry-box">
-                    <div class="chem-item good">
-                        <span class="label">Good 궁합</span>
-                        <span id="chem-good" class="val"></span>
+                <div id="additional-info" class="additional-info">
+                    <div class="saju-desc-box">
+                        <h3>나의 사주 해석</h3>
+                        <p id="card-desc"></p>
+                        <span class="box-watermark">by 월덕요정</span>
                     </div>
-                    <div class="chem-item bad">
-                        <span class="label">Bad 궁합</span>
-                        <span id="chem-bad" class="val"></span>
+                    <div class="chemistry-box">
+                        <div class="chem-item good">
+                            <span class="label">Good 궁합</span>
+                            <span id="chem-good" class="val"></span>
+                            <span class="box-watermark">by 월덕요정</span>
+                        </div>
+                        <div class="chem-item bad">
+                            <span class="label">Bad 궁합</span>
+                            <span id="chem-bad" class="val"></span>
+                            <span class="box-watermark">by 월덕요정</span>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="action-buttons">
-                <button id="btn-download" class="btn-secondary">⬇ 이미지 저장</button>
-                <button id="btn-share" class="btn-kakao">💬 카카오톡 공유</button>
+                <div class="download-label" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: var(--text-sub); margin-top: 10px; margin-bottom: 5px;">⬇ 다운로드 버튼 ⬇</div>
+                <div class="download-row">
+                    <button id="btn-download-card" class="btn-secondary">캐릭터<br>카드</button>
+                    <button id="btn-download-desc" class="btn-secondary">사주<br>해석</button>
+                    <button id="btn-download-good" class="btn-secondary">Good<br>궁합</button>
+                    <button id="btn-download-bad" class="btn-secondary">Bad<br>궁합</button>
+                </div>
+                <div class="share-section">
+                    <div class="share-label" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: var(--text-sub); margin-top: 20px; margin-bottom: 15px;">⬇ 친구에게 공유하기 ⬇</div>
+                    <div class="share-buttons">
+                        <button id="btn-share-link" class="btn-share-icon link-icon" title="링크 복사">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        </button>
+                        <button id="btn-share-kakao" class="btn-share-icon kakao-icon" title="카카오톡 공유">
+                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M16 4.64C8.268 4.64 2 9.47 2 15.424c0 3.902 2.597 7.306 6.55 9.274l-1.353 4.954c-.167.61.472.99 1.004.606l5.857-3.904h1.942c7.732 0 14-4.83 14-10.784S23.732 4.64 16 4.64z" fill="#3c1e1e"/></svg>
+                        </button>
+                        <button id="btn-share-fb" class="btn-share-icon fb-icon" title="페이스북 공유">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </button>
+                        <button id="btn-share-x" class="btn-share-icon x-icon" title="X 공유">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        </button>
+                    </div>
+                </div>
                 <button id="btn-retry" class="btn-text">↺ 다시하기</button>
             </div>
         </section>

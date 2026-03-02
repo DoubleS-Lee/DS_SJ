@@ -33,7 +33,7 @@ body {
 }
 
 .app-container {
-    width: 100%; max-width: 500px; padding: 20px;
+    width: 100%; max-width: 500px; padding: 20px 20px 120px 20px;
     display: flex; flex-direction: column; align-items: center; gap: 20px;
 }
 
@@ -43,7 +43,7 @@ body {
 }
 
 .main-header h1 {
-    font-family: 'Black Han Sans', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     font-size: 3rem;
     background: linear-gradient(to bottom, #fff, #b2bec3);
     -webkit-background-clip: text;
@@ -59,7 +59,7 @@ body {
 }
 
 .form-group { margin-bottom: 15px; }
-.form-group-row { display: flex; gap: 15px; }
+.form-group-row { display: flex; flex-direction: column; gap: 0; }
 .form-group-row .form-group { flex: 1; }
 
 label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-sub); }
@@ -69,6 +69,9 @@ input, select {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--glass-border);
     border-radius: 8px; color: white; outline: none;
+    display: block;
+    box-sizing: border-box;
+    max-width: 100%;
 }
 
 .btn-primary {
@@ -85,10 +88,13 @@ input, select {
     position: relative; background: #000;
     border-radius: 15px; overflow: hidden;
     box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
 }
+#photocard:hover { transform: scale(1.02); }
 
 .character-image-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; }
-#character-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+#character-img { width: 100%; height: 100%; object-fit: cover; }
 .image-overlay {
     position: absolute; bottom: 0; left: 0; width: 100%; height: 60%;
     background: none;
@@ -129,7 +135,7 @@ input, select {
 /* Fix 4: Footer text color */
 .card-footer { 
     display: flex; 
-    justify-content: flex-end; 
+    justify-content: center; /* 가운데 정렬 기반으로 변경 */
     align-items: flex-end; 
     width: 100%; 
     position: relative;
@@ -142,18 +148,31 @@ input, select {
         1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     font-weight: 700; 
     opacity: 1; 
-    margin-bottom: 10px; /* 푸터를 타이틀 위로 올리기 위한 여백 */
+    margin-bottom: 3px; /* 기존 8px에서 0으로 줄여서 아래(card-title)와 더 가깝게 밀착 */
+    transform: translateY(6px); /* 아래쪽으로 조금 더 이동 */
 }
-.footer-left { position: absolute; left: 50%; transform: translate(-50%, 9px); text-align: center; width: max-content; }
-.footer-right { text-align: right; font-style: italic; font-size: 0.5rem; transform: translate(-10px, 13px); }
+.footer-left { text-align: center; width: 100%; z-index: 2; }
+.photocard-watermark {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.7rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-style: italic;
+    pointer-events: none;
+    z-index: 20;
+    text-shadow: 1px 1px 2px #000;
+}
 
 /* Fix 6: Reduce font weight of one-line description (card-title) */
 /* Fix 4: White text, Black Shadow instead of Stroke */
 .card-title { 
     font-family: 'Noto Sans KR', sans-serif; 
     font-weight: 700; 
-    font-size: 1.0rem; 
+    font-size: clamp(0.85rem, 4vw, 1.1rem); /* 반응형 폰트 크기 적용 */
     margin-bottom: 0; /* 타이틀을 가장 아래로 내리기 위해 마진 제거 */
+    transform: translateY(2px); /* 아래로 2px 이동 */
     text-align: center; /* 가운데 정렬 */
     color: #ffffff; 
     /* Removed text-stroke due to rendering issues */
@@ -167,7 +186,7 @@ input, select {
 }
 
 .additional-info { width: 100%; margin-top: 15px; }
-.saju-desc-box { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 15px; backdrop-filter: blur(5px); border: 1px solid var(--glass-border); aspect-ratio: 1080 / 1080; display: flex; flex-direction: column; justify-content: center; }
+.saju-desc-box { position: relative; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 15px; backdrop-filter: blur(5px); border: 1px solid var(--glass-border); aspect-ratio: 1080 / 1080; display: flex; flex-direction: column; justify-content: center; }
 .saju-desc-box h3 { 
     font-family: 'Noto Sans KR', sans-serif;
     font-size: 1.8rem; 
@@ -185,7 +204,6 @@ input, select {
     background-color: rgba(0,0,0,0.5); 
     background-size: cover; 
     background-position: center top; /* Center Top alignment for portraits */
-    background-blend-mode: overlay; 
     padding: 15px; 
     border-radius: 10px; 
     font-size: 0.9rem; 
@@ -199,18 +217,84 @@ input, select {
     justify-content: center;
 }
 .chem-item.has-bg { 
-    background-color: rgba(0,0,0,0.6); /* Darker overlay for readability */
+    /* removed background-color override as we will use linear-gradient for overlay in JS */
 }
-.chem-item .label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 1rem; position: relative; z-index: 2; text-shadow: 1px 1px 2px #000; }
-.chem-item .val { position: relative; z-index: 2; text-shadow: 1px 1px 3px rgba(0,0,0,1); font-weight: bold; line-height: 1.4; display: inline-block; color: white;}
+#capture-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: transparent; /* html2canvas backgroundColor will fill this */
+    
+    /* Prevent image save via long press / touch */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+#capture-area img {
+    -webkit-user-drag: none;
+    pointer-events: none; /* Prevent direct interaction on the image itself */
+}
+.chem-item .label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 1.8rem; position: relative; z-index: 2; text-shadow: 1px 1px 2px #000; }
+.chem-item .val { position: relative; z-index: 2; text-shadow: 1px 1px 3px rgba(0,0,0,1); font-weight: bold; line-height: 1.7; word-break: keep-all; display: inline-block; color: white;}
 .chem-item.good .label { color: #55efc4; }
 .chem-item.bad .label { color: #ff7675; }
 
-.action-buttons { display: flex; gap: 10px; width: 100%; margin-top: 20px; }
-.btn-secondary, .btn-kakao, .btn-text { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
-.btn-secondary { background: #636e72; color: white; }
+.action-buttons { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 20px; }
+.download-row { display: flex; gap: 5px; width: 100%; }
+.download-row .btn-secondary { flex: 1; padding: 10px 5px; font-size: 1.0rem; }
+.btn-secondary, .btn-kakao, .btn-text { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.btn-secondary { 
+    background: rgba(255, 255, 255, 0.15); 
+    color: white; 
+    border: 1px solid rgba(255, 255, 255, 0.3); 
+    backdrop-filter: blur(4px); 
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.btn-secondary.downloaded {
+    background: rgba(85, 239, 196, 0.15);
+    color: #55efc4;
+    border-color: rgba(85, 239, 196, 0.4);
+}
+.btn-secondary.downloaded:hover {
+    transform: none;
+    box-shadow: none;
+    background: rgba(85, 239, 196, 0.15);
+    cursor: default;
+}
 .btn-kakao { background: #fee500; color: #3c1e1e; }
-.btn-text { background: transparent; color: #b2bec3; border: 1px solid #b2bec3; }
+.btn-text { background: transparent; color: #b2bec3; border: 1px solid #b2bec3; margin-top: 10px; font-size: 1.2rem; padding: 15px; }
+
+/* Share Buttons */
+.share-section { margin-top: 5px; }
+.share-buttons { display: flex; justify-content: center; gap: 15px; margin-bottom: 10px; }
+.btn-share-icon {
+    width: 45px; height: 45px; border-radius: 50%; border: none; cursor: pointer;
+    display: flex; justify-content: center; align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+.btn-share-icon:hover { transform: scale(1.1); box-shadow: 0 6px 12px rgba(0,0,0,0.5); }
+.link-icon { background: #4b6584; color: white; }
+.kakao-icon { background: #fee500; }
+.fb-icon { background: #1877f2; color: white; }
+.x-icon { background: #111111; color: white; border: 1px solid #333; }
+
+.box-watermark {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.7rem;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-style: italic;
+    pointer-events: none;
+    z-index: 5;
+}
 
 /* Fix 3: Thicker Borders (Removed for testing) */
 .card-frame[data-rarity="UR"] { }
