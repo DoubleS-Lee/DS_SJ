@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'JeongseonArirang';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/JSArirang-RegularA1.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
     --bg-dark: #0f0c29;
     --glass-bg: rgba(255, 255, 255, 0.05);
@@ -43,8 +50,8 @@ body {
 }
 
 .main-header h1 {
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 3rem;
+    font-family: 'JeongseonArirang', 'Noto Sans KR', sans-serif;
+    font-size: 4rem;
     background: linear-gradient(to bottom, #fff, #b2bec3);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -301,3 +308,17 @@ input, select {
 .card-frame[data-rarity="SSR"] { }
 .card-frame[data-rarity="SR"] { }
 .card-frame[data-rarity="R"] { }
+
+.site-footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-sub);
+    opacity: 0.6;
+    line-height: 1.5;
+    width: 100%;
+    word-break: keep-all;
+}
+.site-footer p {
+    margin-bottom: 2px;
+}
