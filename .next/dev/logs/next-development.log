@@ -1,3 +1,0 @@
-[00:07:07.655] Server  ERROR   Error: ENOENT: no such file or directory, scandir 'D:\00.Google CLI\260210_saju_photocard\src\app'
-[00:07:07.661] Server  ERROR   ⨯ "unhandledRejection:" Error: ENOENT: no such file or directory, scandir 'D:\00.Google CLI\260210_saju_photocard\src\app'
-[00:07:07.664] Server  ERROR   ⨯ "unhandledRejection: " Error: ENOENT: no such file or directory, scandir 'D:\00.Google CLI\260210_saju_photocard\src\app'

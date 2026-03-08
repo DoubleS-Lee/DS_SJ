@@ -9,6 +9,7 @@ package-lock.json
 dist/
 build/
 .tmp/
+.next/
 
 # OS files
 .DS_Store
