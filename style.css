@@ -58,6 +58,57 @@ body {
     text-align: center;
 }
 
+body.theme-shingeki {
+    background: #424242;
+    background-image: radial-gradient(circle at center, #525252, #2a2a2a);
+    --bg-dark: #424242;
+    --glass-bg: rgba(62, 39, 35, 0.6);
+    --glass-border: rgba(74, 93, 78, 0.8);
+    --primary: #8B0000;
+    --text-main: #F5F5DC;
+    --text-sub: #c8c8b4;
+    color: var(--text-main);
+}
+
+body.theme-shingeki .background-overlay {
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+}
+
+body.theme-shingeki .main-header h1 {
+    font-family: 'Nanum Myeongjo', serif;
+    background: linear-gradient(to bottom, #F5F5DC, #3E2723);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+body.theme-shingeki .btn-primary {
+    background: linear-gradient(45deg, #4A5D4E, #3E2723);
+    border: 1px solid #8B0000;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+
+body.theme-shingeki .btn-primary:hover {
+    background: linear-gradient(45deg, #5c7361, #4d312c);
+}
+
+body.theme-shingeki input, body.theme-shingeki select {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #4A5D4E;
+    color: #F5F5DC;
+}
+
+body.theme-shingeki #photocard {
+    border: 3px solid #3E2723;
+    box-shadow: 0 0 20px rgba(62, 39, 35, 0.8), inset 0 0 15px rgba(0,0,0,0.5);
+    background: #2a2a2a;
+}
+
+body.theme-shingeki .info-overlay {
+    background: linear-gradient(to top, rgba(62, 39, 35, 0.9), transparent);
+}
+
 .glass-panel {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
@@ -89,6 +140,44 @@ input, select {
 }
 
 .hidden { display: none !important; }
+
+/* Loading Spinner */
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    min-height: 150px;
+}
+
+.breathing-circle {
+    width: 60px;
+    height: 60px;
+    border: 6px solid rgba(255, 255, 255, 0.2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-with-bg {
+    width: 100%;
+    min-height: 300px;
+    border-radius: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
 #photocard {
     width: 100%; aspect-ratio: 1080 / 1080;

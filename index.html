@@ -1,156 +1,138 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>귀멸의 칼날 사주 매칭</title>
+    <title>캐릭터 사주 매칭</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .landing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
 
-    <!-- Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"></script>
+        .landing-title {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+
+        .landing-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+        }
+
+        .theme-cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+        }
+
+        .theme-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            width: 280px;
+            text-decoration: none;
+            color: white;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .theme-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .theme-kimetsu:hover {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('./images/bg_kimetsu.jpg');
+        }
+
+        .theme-shingeki:hover {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('./images/bg_shingeki.jpg');
+        }
+
+        .theme-card h2 {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 2rem;
+            margin: 15px 0 10px;
+            color: inherit;
+        }
+
+        .theme-card p {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.4;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .theme-kimetsu {
+            border-bottom: 4px solid #ff4b2b;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('./images/bg_kimetsu.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .theme-shingeki {
+            border-bottom: 4px solid #4A5D4E;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('./images/bg_shingeki.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .landing-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            z-index: 1;
+        }
+    </style>
 </head>
 <body>
-    <div class="background-overlay"></div>
-    <div class="app-container">
-        <header class="main-header">
-            <h1>귀멸의 사주</h1>
-            <p>나와 비슷한 사주를 가진 캐릭터는 누구일까요?</p>
-        </header>
+    <div class="landing-bg"></div>
+    <div class="landing-container">
+        <h1 class="landing-title">사주 분석 캐릭터 매칭</h1>
+        <p class="landing-subtitle">당신의 영혼이 속한 세계를 선택하세요</p>
 
-        <section id="input-section" class="glass-panel">
-            <form id="saju-form">
-                <div class="form-group">
-                    <label>이름 (닉네임)</label>
-                    <input type="text" id="username" placeholder="홍길동" required>
-                </div>
-                <div class="form-group-row">
-                    <div class="form-group">
-                        <label>생년월일</label>
-                        <input type="date" id="birthdate" required>
-                    </div>
-                    <div class="form-group">
-                        <label>달력</label>
-                        <select id="calendar-type">
-                            <option value="solar">양력</option>
-                            <option value="lunar">음력</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group-row">
-                    <div class="form-group">
-                        <label>태어난 시간</label>
-                        <input type="time" id="birthtime" required>
-                    </div>
-                    <div class="form-group">
-                        <label>성별</label>
-                        <select id="gender">
-                            <option value="male">남성</option>
-                            <option value="female">여성</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn-primary">호흡 분석 시작</button>
-            </form>
-        </section>
+        <div class="theme-cards">
+            <a href="saju.html?theme=kimetsu" class="theme-card theme-kimetsu">
+                <h2>귀멸의 칼날</h2>
+                <p>나와 가장 닮은 호흡을 가진 캐릭터는 누구일까?</p>
+            </a>
 
-        <section id="loading-section" class="hidden">
-            <div class="loader-content">
-                <div class="breathing-circle"></div>
-                <p>전집중 호흡으로 분석 중...</p>
-            </div>
-        </section>
-
-        <section id="result-section" class="hidden">
-            <div id="capture-area">
-                <div id="photocard-container">
-                    <div id="photocard" class="card-frame">
-                        <div class="character-image-wrapper">
-                            <img id="character-img" src="" alt="Character">
-                            <div class="image-overlay"></div>
-                        </div>
-                        <div class="card-top">
-                            <h3 id="card-name" class="card-name"></h3>
-                        </div>
-                        <div class="card-bottom">
-                            <div class="card-footer">
-                                <span id="user-info-display" class="footer-left"></span>
-                            </div>
-                            <h2 id="card-title" class="card-title"></h2>
-                        </div>
-                        <div class="effect-layer"></div>
-                        <span class="photocard-watermark">by 월덕요정</span>
-                    </div>
-                </div>
-                <div id="additional-info" class="additional-info">
-                    <div class="saju-desc-box">
-                        <h3>나의 사주 해석</h3>
-                        <p id="card-desc"></p>
-                        <span class="box-watermark">by 월덕요정</span>
-                    </div>
-                    <div class="chemistry-box">
-                        <div class="chem-item good">
-                            <span class="label">Good 궁합</span>
-                            <span id="chem-good" class="val"></span>
-                            <span class="box-watermark">by 월덕요정</span>
-                        </div>
-                        <div class="chem-item bad">
-                            <span class="label">Bad 궁합</span>
-                            <span id="chem-bad" class="val"></span>
-                            <span class="box-watermark">by 월덕요정</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="action-buttons">
-                <div class="download-label" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: var(--text-sub); margin-top: 10px; margin-bottom: 5px;">⬇ 다운로드 버튼 ⬇</div>
-                <div class="download-row">
-                    <button id="btn-download-card" class="btn-secondary">캐릭터<br>카드</button>
-                    <button id="btn-download-desc" class="btn-secondary">사주<br>해석</button>
-                    <button id="btn-download-good" class="btn-secondary">Good<br>궁합</button>
-                    <button id="btn-download-bad" class="btn-secondary">Bad<br>궁합</button>
-                </div>
-                <div class="share-section">
-                    <div class="share-label" style="text-align: center; font-size: 1.3rem; font-weight: bold; color: var(--text-sub); margin-top: 20px; margin-bottom: 15px;">⬇ 친구에게 공유하기 ⬇</div>
-                    <div class="share-buttons">
-                        <button id="btn-share-link" class="btn-share-icon link-icon" title="링크 복사">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-                        </button>
-                        <button id="btn-share-kakao" class="btn-share-icon kakao-icon" title="카카오톡 공유">
-                            <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M16 4.64C8.268 4.64 2 9.47 2 15.424c0 3.902 2.597 7.306 6.55 9.274l-1.353 4.954c-.167.61.472.99 1.004.606l5.857-3.904h1.942c7.732 0 14-4.83 14-10.784S23.732 4.64 16 4.64z" fill="#3c1e1e"/></svg>
-                        </button>
-                        <button id="btn-share-fb" class="btn-share-icon fb-icon" title="페이스북 공유">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                        </button>
-                        <button id="btn-share-x" class="btn-share-icon x-icon" title="X 공유">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        </button>
-                    </div>
-                </div>
-                <div class="creator-links" style="display: flex; gap: 10px; margin-top: 15px;">
-                    <a href="https://www.instagram.com/saju_moonfairy?igsh=ejRzNThmaTl3bWN3" target="_blank" class="btn-secondary" style="text-decoration: none; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 5px; padding: 15px 5px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #E1306C;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                        <span style="font-size: 0.9rem;">월덕요정<br>인스타</span>
-                    </a>
-                    <a href="#" target="_blank" class="btn-secondary" style="text-decoration: none; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 5px; padding: 15px 5px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #FF0000;"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
-                        <span style="font-size: 0.9rem;">월덕요정<br>유튜브</span>
-                    </a>
-                </div>
-                <a href="mailto:3aroundv@google.com?subject=[귀멸의 사주] 문의사항" class="btn-text" style="display: block; text-align: center; text-decoration: none; margin-top: 15px; margin-bottom: -5px; font-size: 1.2rem; color: var(--text-sub); border: 1px solid rgba(255,255,255,0.2);">✉ 문의하기</a>
-                <button id="btn-retry" class="btn-text">↺ 다시하기</button>
-            </div>
-        </section>
-
-        <footer class="site-footer">
-            <p>Made by 사주요정</p>
-            <p>본 서비스는 팬심으로 제작된 비영리 프로젝트입니다.</p>
-            <p>모든 캐릭터 및 세계관의 저작권은 ⓒKoyoharu Gotouge / SHUEISHA, Aniplex, ufotable에 있습니다.</p>
-        </footer>
+            <a href="saju.html?theme=shingeki" class="theme-card theme-shingeki">
+                <h2>진격의 거인</h2>
+                <p>벽 밖의 세계, 내 운명을 함께할 캐릭터는?</p>
+            </a>
+        </div>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>

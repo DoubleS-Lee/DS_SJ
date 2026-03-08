@@ -1,0 +1,47 @@
+{
+  "theme": "shingeki",
+  "texts": {
+    "headerTitle": "진격의 사주",
+    "headerSubtitle": "벽 밖의 세계, 내 운명의 캐릭터는?",
+    "loadingText": "심장을 바쳐 운명 분석 중...",
+    "btnSubmit": "운명 분석 시작"
+  },
+  "colors": {
+    "primary": "#8B0000",
+    "bgOverlayUrl": "url('./images/bg_shingeki.jpg')",
+    "loadingBgUrl": "url('./images/wating_shingeki.webp')",
+    "goodChemColor": "#4A5D4E",
+    "badChemColor": "#8B0000"
+  },
+  "characters": {
+    "에렌 예거": "eren",
+    "에렌 예거 (파이널)": "eren_final",
+    "가비 브라운": "gabi",
+    "프록 포르스터": "floch",
+    "케니 아커만": "kenny",
+    "그리샤 예거": "grisha",
+    "한지 조에 (파이널)": "hange_final",
+    "에르빈 스미스": "erwin",
+    "아르민 (파이널)": "armin_final",
+    "아르민": "armin",
+    "지크 예거": "zeke",
+    "피크 핑거": "pieck",
+    "옐레나": "yelena",
+    "애니 레온하트": "annie",
+    "한지 조에": "hange",
+    "히스토리아": "historia",
+    "리바이 아커만": "levi",
+    "미카사 아커만": "mikasa",
+    "쟝": "jean",
+    "쟝 (파이널)": "jean_final",
+    "사샤 블라우스": "sasha",
+    "유미르": "ymir",
+    "코니 스프링거": "connie",
+    "라이너 브라운": "reiner",
+    "히스토리아 (여왕)": "historia_queen",
+    "라이너 (파이널)": "reiner_final",
+    "베르톨트 후버": "bertholdt",
+    "default": "default"
+  },
+  "copyright": "모든 캐릭터 및 세계관의 저작권은 ⓒHajime Isayama / KODANSHA, 진격의 거인 제작위원회에 있습니다."
+}
