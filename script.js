@@ -5,7 +5,7 @@
 try {
     if (window.Kakao && !window.Kakao.isInitialized()) {
         window.Kakao.init('f36810396616a494fcc94b271ab7e2ed'); // 예: '1234567890abcdef...'
-        console.log("Kakao SDK Initialized");
+        // console.log("Kakao SDK Initialized");
     } else if (!window.Kakao) {
         console.warn("Kakao SDK 로드 실패: 광고 차단기 등의 문제일 수 있습니다.");
     }
@@ -44,7 +44,6 @@ let currentTheme = new URLSearchParams(window.location.search).get('theme') || '
 
 function getCharacterImage(text) {
     let imgUrl = characterImages['default'] || `./images/${currentTheme}/default.png`;
-    if (MOCK_MODE) return imgUrl; // 연습/테스트 용으로 항상 default 이미지 출력
     for (const [key, url] of Object.entries(characterImages)) {
         if (key !== 'default' && text && text.includes(key)) {
             imgUrl = url;
@@ -58,14 +57,14 @@ function getCharacterImage(text) {
 // 3. Server API Interaction
 // ------------------------------------------------------------------
 // 스타일 테스트용 Mock 모드 (true로 설정하면 API를 호출하지 않음)
-const MOCK_MODE = false;
+// const MOCK_MODE = false;
 
 async function analyzeDestiny(userInfo) {
     const cacheKey = `sajuCache_${userInfo.name}_${userInfo.birthDate}_${userInfo.birthTime}_${userInfo.calendarType}_${userInfo.gender}_${currentTheme}`;
     const cachedData = localStorage.getItem(cacheKey);
 
     if (cachedData) {
-        console.log("Returning cached result.");
+        // console.log("Returning cached result.");
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve(JSON.parse(cachedData));
@@ -73,6 +72,7 @@ async function analyzeDestiny(userInfo) {
         });
     }
 
+    /*
     if (MOCK_MODE) {
         console.log("Mock Mode Enabled: Returning dummy data without calling API.");
         return new Promise((resolve) => {
@@ -91,9 +91,10 @@ async function analyzeDestiny(userInfo) {
             }, 1000);
         });
     }
+    */
 
     try {
-        console.log("Sending data to server:", { userInfo, theme: currentTheme });
+        // console.log("Sending data to server:", { userInfo, theme: currentTheme });
         const response = await fetch('/api/analyze', {
             method: 'POST',
             headers: {
@@ -379,7 +380,7 @@ function playCharacterAnimation(pngUrl) {
         elements.characterImg.onload = null; 
         
         const duration = await getDuration();
-        console.log(`WebP 재생 시간: ${duration}ms`);
+        // console.log(`WebP 재생 시간: ${duration}ms`);
         
         setTimeout(() => {
             if (elements.characterImg.src.includes('?t=')) {
@@ -466,7 +467,7 @@ elements.btnShareKakao.addEventListener('click', () => {
             content: {
                 title: themeData.texts?.headerTitle || '사주 분석',
                 description: themeData.texts?.headerSubtitle || '내 운명과 연결된 캐릭터는?',
-                imageUrl: 'https://images.unsplash.com/photo-1534796636912-3b95b3ab5980?auto=format&fit=crop&q=80',
+                imageUrl: `${window.location.origin}${window.location.pathname.replace(/[^\\/]+$/, '')}images/bg_${currentTheme}.jpg`,
                 link: {
                     mobileWebUrl: pageUrl,
                     webUrl: pageUrl,
