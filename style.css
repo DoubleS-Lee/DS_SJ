@@ -109,6 +109,57 @@ body.theme-shingeki .info-overlay {
     background: linear-gradient(to top, rgba(62, 39, 35, 0.9), transparent);
 }
 
+body.theme-onepiece {
+    background: #0f2027;
+    background-image: radial-gradient(circle at center, #203a43, #0f2027);
+    --bg-dark: #0f2027;
+    --glass-bg: rgba(30, 60, 114, 0.6);
+    --glass-border: rgba(42, 82, 152, 0.8);
+    --primary: #f1c40f;
+    --text-main: #ffffff;
+    --text-sub: #bdc3c7;
+    color: var(--text-main);
+}
+
+body.theme-onepiece .background-overlay {
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+}
+
+body.theme-onepiece .main-header h1 {
+    font-family: 'Black Han Sans', sans-serif;
+    background: linear-gradient(to bottom, #f1c40f, #e67e22);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+body.theme-onepiece .btn-primary {
+    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    border: 1px solid #f1c40f;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+
+body.theme-onepiece .btn-primary:hover {
+    background: linear-gradient(45deg, #2a5298, #1e3c72);
+}
+
+body.theme-onepiece input, body.theme-onepiece select {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #2a5298;
+    color: #ffffff;
+}
+
+body.theme-onepiece #photocard {
+    border: 3px solid #1e3c72;
+    box-shadow: 0 0 20px rgba(30, 60, 114, 0.8), inset 0 0 15px rgba(0,0,0,0.5);
+    background: #0f2027;
+}
+
+body.theme-onepiece .info-overlay {
+    background: linear-gradient(to top, rgba(30, 60, 114, 0.9), transparent);
+}
+
 .glass-panel {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);

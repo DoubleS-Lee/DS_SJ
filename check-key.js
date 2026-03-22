@@ -19,9 +19,9 @@ async function check() {
     const genAI = new GoogleGenerativeAI(apiKey);
     
     // 모델 리스트를 가져오는 대신, 가장 기본적인 모델로 테스트 통신을 시도합니다.
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite-preview" });
     
-    console.log("🚀 'gemini-1.5-flash' 모델로 테스트 요청 중...");
+    console.log("🚀 'gemini-3.1-flash-lite-preview' 모델로 테스트 요청 중...");
     const result = await model.generateContent("Hi");
     const response = await result.response;
     

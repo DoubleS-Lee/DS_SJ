@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 app.post('/api/analyze', async (req, res) => {
-    console.log("분석 요청 수신됨..."); 
+    // console.log("분석 요청 수신됨..."); 
     try {
         const { userInfo, theme = 'kimetsu' } = req.body;
         const apiKey = process.env.GEMINI_API_KEY;
@@ -44,7 +44,7 @@ app.post('/api/analyze', async (req, res) => {
         const cHour = dateObj.getHours();
         const cMinute = dateObj.getMinutes();
 
-        console.log(`시간 보정 적용: ${hour}:${minute} -> ${cHour}:${cMinute} (-32분)`);
+        // console.log(`시간 보정 적용: ${hour}:${minute} -> ${cHour}:${cMinute} (-32분)`);
 
         // 2. 사주 계산 (보정된 시간 사용)
         let lunarDate;
@@ -113,22 +113,26 @@ app.post('/api/analyze', async (req, res) => {
         if (ohaengScores[pillars.hour.ganElement] !== undefined) ohaengScores[pillars.hour.ganElement] += 10;
         if (ohaengScores[pillars.hour.zhiElement] !== undefined) ohaengScores[pillars.hour.zhiElement] += 5;
 
+        /*
         console.log(`\n============================`);
         console.log(`[오행 점수 계산 결과]`);
         console.log(`목(木): ${ohaengScores['목']}점 | 화(火): ${ohaengScores['화']}점 | 토(土): ${ohaengScores['토']}점 | 금(金): ${ohaengScores['금']}점 | 수(水): ${ohaengScores['수']}점`);
         console.log(`============================\n`);
+        */
 
         const fourPillars = `${pillars.year.text} ${pillars.month.text} ${pillars.day.text} ${pillars.hour.text}`;
         const fourPillarsHanja = `${pillars.year.hanja} ${pillars.month.hanja} ${pillars.day.hanja} ${pillars.hour.hanja}`;
         const ohaengInfo = `년주: ${pillars.year.element}, 월주: ${pillars.month.element}, 일주: ${pillars.day.element}, 시주: ${pillars.hour.element}`;
 
+        /*
         console.log(`계산된 사주: ${fourPillars}`);
         console.log(`계산된 사주(한자): ${fourPillarsHanja}`);
         console.log(`오행 정보: ${ohaengInfo}`);
+        */
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-2.5-flash",
+            model: "gemini-3.1-flash-lite-preview",
             generationConfig: {
                 temperature: 0.05, 
             }
@@ -145,20 +149,22 @@ app.post('/api/analyze', async (req, res) => {
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
-        console.log("Gemini Raw Response:", text); // 디버깅용 로그 추가
+        // console.log("Gemini Raw Response:", text); // 디버깅용 로그 추가
 
         const jsonMatch = text.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
             const jsonData = JSON.parse(jsonMatch[0]);
             
+            /*
             console.log(`\n============================`);
             console.log(`[캐릭터 매칭 사유]`);
             console.log(`추천 캐릭터: ${jsonData.character_name}`);
             console.log(`매칭 사유: ${jsonData.reason}`);
             console.log(`============================\n`);
+            */
 
             res.json(jsonData);
-            console.log("분석 완료 및 응답 전송 성공");
+            // console.log("분석 완료 및 응답 전송 성공");
         } else {
             throw new Error("JSON 추출 실패");
         }

@@ -142,9 +142,9 @@ window.addEventListener('DOMContentLoaded', async () => {
         
         // Character images mapping
         for (const [key, value] of Object.entries(themeData.characters)) {
-            characterImages[key] = `./images/${currentTheme}/${value}.png`;
+            const ext = currentTheme === 'onepiece' ? 'jpg' : 'png';
+            characterImages[key] = `./images/${currentTheme}/${value}.${ext}`;
         }
-
         // Apply theme texts
         document.querySelector('.main-header h1').textContent = themeData.texts.headerTitle;
         document.querySelector('.main-header p').textContent = themeData.texts.headerSubtitle;
@@ -362,6 +362,12 @@ function playCharacterAnimation(pngUrl) {
     if (isAnimating) return;
     
     currentCharacterPngUrl = pngUrl;
+    
+    if (currentTheme === 'onepiece') {
+        elements.characterImg.src = pngUrl;
+        return;
+    }
+
     isAnimating = true;
     
     const baseUrl = pngUrl.replace('.png', '.webp');
