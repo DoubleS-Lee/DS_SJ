@@ -142,7 +142,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         
         // Character images mapping
         for (const [key, value] of Object.entries(themeData.characters)) {
-            const ext = currentTheme === 'onepiece' ? 'jpg' : 'png';
+            const ext = 'png';
             characterImages[key] = `./images/${currentTheme}/${value}.${ext}`;
         }
         // Apply theme texts

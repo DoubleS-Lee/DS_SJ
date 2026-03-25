@@ -113,22 +113,19 @@ app.post('/api/analyze', async (req, res) => {
         if (ohaengScores[pillars.hour.ganElement] !== undefined) ohaengScores[pillars.hour.ganElement] += 10;
         if (ohaengScores[pillars.hour.zhiElement] !== undefined) ohaengScores[pillars.hour.zhiElement] += 5;
 
-        /*
         console.log(`\n============================`);
         console.log(`[오행 점수 계산 결과]`);
         console.log(`목(木): ${ohaengScores['목']}점 | 화(火): ${ohaengScores['화']}점 | 토(土): ${ohaengScores['토']}점 | 금(金): ${ohaengScores['금']}점 | 수(水): ${ohaengScores['수']}점`);
         console.log(`============================\n`);
-        */
 
         const fourPillars = `${pillars.year.text} ${pillars.month.text} ${pillars.day.text} ${pillars.hour.text}`;
         const fourPillarsHanja = `${pillars.year.hanja} ${pillars.month.hanja} ${pillars.day.hanja} ${pillars.hour.hanja}`;
         const ohaengInfo = `년주: ${pillars.year.element}, 월주: ${pillars.month.element}, 일주: ${pillars.day.element}, 시주: ${pillars.hour.element}`;
+        const ohaengScoresStr = `목: ${ohaengScores['목']}점, 화: ${ohaengScores['화']}점, 토: ${ohaengScores['토']}점, 금: ${ohaengScores['금']}점, 수: ${ohaengScores['수']}점`;
 
-        /*
         console.log(`계산된 사주: ${fourPillars}`);
         console.log(`계산된 사주(한자): ${fourPillarsHanja}`);
         console.log(`오행 정보: ${ohaengInfo}`);
-        */
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ 
@@ -144,7 +141,8 @@ app.post('/api/analyze', async (req, res) => {
             .replace(/\{\{USER_NAME\}\}/g, userInfo.name)
             .replace(/\{\{FOUR_PILLARS\}\}/g, fourPillars)
             .replace(/\{\{FOUR_PILLARS_HANJA\}\}/g, fourPillarsHanja)
-            .replace(/\{\{OHAENG_INFO\}\}/g, ohaengInfo);
+            .replace(/\{\{OHAENG_INFO\}\}/g, ohaengInfo)
+            .replace(/\{\{OHAENG_SCORES\}\}/g, ohaengScoresStr);
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -155,13 +153,13 @@ app.post('/api/analyze', async (req, res) => {
         if (jsonMatch) {
             const jsonData = JSON.parse(jsonMatch[0]);
             
-            /*
             console.log(`\n============================`);
             console.log(`[캐릭터 매칭 사유]`);
+            console.log(`주도 오행: ${jsonData.dominant_element}`);
+            console.log(`십성: ${jsonData.sipsung}`);
             console.log(`추천 캐릭터: ${jsonData.character_name}`);
             console.log(`매칭 사유: ${jsonData.reason}`);
             console.log(`============================\n`);
-            */
 
             res.json(jsonData);
             // console.log("분석 완료 및 응답 전송 성공");
