@@ -118,6 +118,71 @@ app.post('/api/analyze', async (req, res) => {
         console.log(`목(木): ${ohaengScores['목']}점 | 화(火): ${ohaengScores['화']}점 | 토(土): ${ohaengScores['토']}점 | 금(金): ${ohaengScores['금']}점 | 수(水): ${ohaengScores['수']}점`);
         console.log(`============================\n`);
 
+        // 1. 일간(나의 본질) 오행 추출
+        const myElement = pillars.day.ganElement; 
+
+        // 2. 주도 오행(가장 점수가 높은 오행) 찾기
+        const dominantElement = Object.keys(ohaengScores).reduce((a, b) => ohaengScores[a] > ohaengScores[b] ? a : b);
+
+        // 3. 십성(대분류 5성) 계산 매트릭스 함수
+        const getBaseSipsung = (day, dominant) => {
+            if (day === dominant) return '비겁';
+            const sipsungMatrix = {
+                '목': { '화': '식상', '토': '재성', '금': '관성', '수': '인성' },
+                '화': { '토': '식상', '금': '재성', '수': '관성', '목': '인성' },
+                '토': { '금': '식상', '수': '재성', '목': '관성', '화': '인성' },
+                '금': { '수': '식상', '목': '재성', '화': '관성', '토': '인성' },
+                '수': { '목': '식상', '화': '재성', '토': '관성', '금': '인성' }
+            };
+            return sipsungMatrix[day][dominant];
+        };
+
+        const baseSipsung = getBaseSipsung(myElement, dominantElement);
+
+        console.log(`[대분류 십성] 일간: ${myElement} | 주도 오행: ${dominantElement} | 도출: ${baseSipsung}`);
+
+        // 👇👇👇 여기서부터 10성(세부 십성) 계산 로직 추가 👇👇👇
+
+        // 1. 한자 기준 음양(陰陽) 판별 함수 (양(+)이면 true, 음(-)이면 false)
+        const isYang = (hanja) => ['甲','丙','戊','庚','壬','子','寅','辰','午','申','戌'].includes(hanja);
+
+        // 2. 일간(나)의 음양 확인
+        const myPolarity = isYang(pillars.day.hanja.substring(0, 1)) ? '+' : '-';
+
+        // 3. 주도 오행의 음양 파악 (사주 8글자 중 주도 오행에 해당하는 글자들의 양/음 개수 비교)
+        let yangCount = 0; 
+        let yinCount = 0;
+        const allPillars = [pillars.year, pillars.month, pillars.day, pillars.hour];
+        
+        allPillars.forEach(p => {
+            if (p.ganElement === dominantElement) {
+                isYang(p.hanja.substring(0, 1)) ? yangCount++ : yinCount++;
+            }
+            if (p.zhiElement === dominantElement) {
+                isYang(p.hanja.substring(1, 2)) ? yangCount++ : yinCount++;
+            }
+        });
+        
+        // 주도 오행의 최종 음양 (개수가 같으면 기본값으로 양(+) 부여)
+        const dominantPolarity = (yangCount >= yinCount) ? '+' : '-';
+
+        // 4. 일간과 주도 오행의 음양 대조하여 세부 10성 도출
+        let exactSipsung = '';
+        const isSamePolarity = (myPolarity === dominantPolarity); // 음양이 같으면 true (편/비/식), 다르면 false (정/겁/상)
+
+        switch (baseSipsung) {
+            case '비겁': exactSipsung = isSamePolarity ? '비견' : '겁재'; break;
+            case '식상': exactSipsung = isSamePolarity ? '식신' : '상관'; break;
+            case '재성': exactSipsung = isSamePolarity ? '편재' : '정재'; break;
+            case '관성': exactSipsung = isSamePolarity ? '편관' : '정관'; break;
+            case '인성': exactSipsung = isSamePolarity ? '편인' : '정인'; break;
+        }
+
+        console.log(`[최종 10성 계산] 나의 음양: ${myPolarity} | 주도 오행 음양: ${dominantPolarity} | 최종 십성: ${exactSipsung}`);
+        console.log(`============================\n`);
+
+        // 👆👆👆 여기까지 추가 👆👆👆
+
         const fourPillars = `${pillars.year.text} ${pillars.month.text} ${pillars.day.text} ${pillars.hour.text}`;
         const fourPillarsHanja = `${pillars.year.hanja} ${pillars.month.hanja} ${pillars.day.hanja} ${pillars.hour.hanja}`;
         const ohaengInfo = `년주: ${pillars.year.element}, 월주: ${pillars.month.element}, 일주: ${pillars.day.element}, 시주: ${pillars.hour.element}`;
@@ -132,6 +197,7 @@ app.post('/api/analyze', async (req, res) => {
             model: "gemini-3.1-flash-lite-preview",
             generationConfig: {
                 temperature: 0.05, 
+                responseMimeType: "application/json",
             }
         });
 
@@ -142,7 +208,9 @@ app.post('/api/analyze', async (req, res) => {
             .replace(/\{\{FOUR_PILLARS\}\}/g, fourPillars)
             .replace(/\{\{FOUR_PILLARS_HANJA\}\}/g, fourPillarsHanja)
             .replace(/\{\{OHAENG_INFO\}\}/g, ohaengInfo)
-            .replace(/\{\{OHAENG_SCORES\}\}/g, ohaengScoresStr);
+            .replace(/\{\{OHAENG_SCORES\}\}/g, ohaengScoresStr)
+            .replace(/\{\{DOMINANT_ELEMENT\}\}/g, dominantElement)
+            .replace(/\{\{EXACT_SIPSUNG\}\}/g, exactSipsung); // <--- baseSipsung 대신
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
