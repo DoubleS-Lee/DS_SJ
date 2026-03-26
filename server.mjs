@@ -14,6 +14,14 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 프롬프트 파일 서버 시작 시 캐싱
+const promptCache = {};
+const themes = ['kimetsu', 'onepiece', 'shingeki'];
+for (const theme of themes) {
+    promptCache[theme] = await fs.readFile(path.join(__dirname, 'prompts', `${theme}.txt`), 'utf-8');
+}
+console.log(`[프롬프트 캐싱 완료] ${themes.join(', ')}`);
+
 // 미들웨어 설정
 app.use(cors());
 app.use(express.json());
@@ -201,8 +209,8 @@ app.post('/api/analyze', async (req, res) => {
             }
         });
 
-        // 테마에 맞는 프롬프트 동적 로드
-        const promptTemplate = await fs.readFile(path.join(__dirname, 'prompts', `${theme}.txt`), 'utf-8');
+        // 테마에 맞는 프롬프트 캐시에서 로드
+        const promptTemplate = promptCache[theme] ?? await fs.readFile(path.join(__dirname, 'prompts', `${theme}.txt`), 'utf-8');
         const prompt = promptTemplate
             .replace(/\{\{USER_NAME\}\}/g, userInfo.name)
             .replace(/\{\{FOUR_PILLARS\}\}/g, fourPillars)
