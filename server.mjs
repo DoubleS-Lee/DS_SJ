@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 // 캐릭터 데이터 서버 시작 시 캐싱
 const characterCache = {};
-const themes = ['kimetsu'];
+const themes = ['kimetsu', 'onepiece', 'shingeki'];
 for (const theme of themes) {
     const raw = await fs.readFile(path.join(__dirname, 'data', `${theme}_characters.json`), 'utf-8');
     characterCache[theme] = JSON.parse(raw);
