@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Solar, Lunar } from 'lunar-javascript';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -14,13 +13,14 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 프롬프트 파일 서버 시작 시 캐싱
-const promptCache = {};
-const themes = ['kimetsu', 'onepiece', 'shingeki'];
+// 캐릭터 데이터 서버 시작 시 캐싱
+const characterCache = {};
+const themes = ['kimetsu'];
 for (const theme of themes) {
-    promptCache[theme] = await fs.readFile(path.join(__dirname, 'prompts', `${theme}.txt`), 'utf-8');
+    const raw = await fs.readFile(path.join(__dirname, 'data', `${theme}_characters.json`), 'utf-8');
+    characterCache[theme] = JSON.parse(raw);
 }
-console.log(`[프롬프트 캐싱 완료] ${themes.join(', ')}`);
+console.log(`[캐릭터 데이터 캐싱 완료] ${themes.join(', ')}`);
 
 // 미들웨어 설정
 app.use(cors());
@@ -31,12 +31,6 @@ app.post('/api/analyze', async (req, res) => {
     // console.log("분석 요청 수신됨..."); 
     try {
         const { userInfo, theme = 'kimetsu' } = req.body;
-        const apiKey = process.env.GEMINI_API_KEY;
-
-        if (!apiKey) {
-            console.error("API 키가 없습니다!");
-            return res.status(500).json({ error: "API 키 설정 오류" });
-        }
 
         // 1. 생년월일시 파싱
         const [year, month, day] = userInfo.birthDate.split('-').map(Number);
@@ -193,55 +187,43 @@ app.post('/api/analyze', async (req, res) => {
 
         const fourPillars = `${pillars.year.text} ${pillars.month.text} ${pillars.day.text} ${pillars.hour.text}`;
         const fourPillarsHanja = `${pillars.year.hanja} ${pillars.month.hanja} ${pillars.day.hanja} ${pillars.hour.hanja}`;
-        const ohaengInfo = `년주: ${pillars.year.element}, 월주: ${pillars.month.element}, 일주: ${pillars.day.element}, 시주: ${pillars.hour.element}`;
-        const ohaengScoresStr = `목: ${ohaengScores['목']}점, 화: ${ohaengScores['화']}점, 토: ${ohaengScores['토']}점, 금: ${ohaengScores['금']}점, 수: ${ohaengScores['수']}점`;
 
-        console.log(`계산된 사주: ${fourPillars}`);
-        console.log(`계산된 사주(한자): ${fourPillarsHanja}`);
-        console.log(`오행 정보: ${ohaengInfo}`);
+        console.log(`계산된 사주: ${fourPillars} (${fourPillarsHanja})`);
 
-        const genAI = new GoogleGenerativeAI(apiKey);
-        const model = genAI.getGenerativeModel({ 
-            model: "gemini-3.1-flash-lite-preview",
-            generationConfig: {
-                temperature: 0.05, 
-                responseMimeType: "application/json",
-            }
-        });
-
-        // 테마에 맞는 프롬프트 캐시에서 로드
-        const promptTemplate = promptCache[theme] ?? await fs.readFile(path.join(__dirname, 'prompts', `${theme}.txt`), 'utf-8');
-        const prompt = promptTemplate
-            .replace(/\{\{USER_NAME\}\}/g, userInfo.name)
-            .replace(/\{\{FOUR_PILLARS\}\}/g, fourPillars)
-            .replace(/\{\{FOUR_PILLARS_HANJA\}\}/g, fourPillarsHanja)
-            .replace(/\{\{OHAENG_INFO\}\}/g, ohaengInfo)
-            .replace(/\{\{OHAENG_SCORES\}\}/g, ohaengScoresStr)
-            .replace(/\{\{DOMINANT_ELEMENT\}\}/g, dominantElement)
-            .replace(/\{\{EXACT_SIPSUNG\}\}/g, exactSipsung); // <--- baseSipsung 대신
-
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-        // console.log("Gemini Raw Response:", text); // 디버깅용 로그 추가
-
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-            const jsonData = JSON.parse(jsonMatch[0]);
-            
-            console.log(`\n============================`);
-            console.log(`[캐릭터 매칭 사유]`);
-            console.log(`주도 오행: ${jsonData.dominant_element}`);
-            console.log(`십성: ${jsonData.sipsung}`);
-            console.log(`추천 캐릭터: ${jsonData.character_name}`);
-            console.log(`매칭 사유: ${jsonData.reason}`);
-            console.log(`============================\n`);
-
-            res.json(jsonData);
-            // console.log("분석 완료 및 응답 전송 성공");
-        } else {
-            throw new Error("JSON 추출 실패");
+        // 캐릭터 데이터 룩업
+        const key = `${dominantElement}_${exactSipsung}`;
+        const characters = characterCache[theme];
+        if (!characters) {
+            throw new Error(`'${theme}' 테마의 캐릭터 데이터가 없습니다.`);
         }
+        const entry = characters[key];
+        if (!entry) {
+            throw new Error(`키 '${key}'에 해당하는 캐릭터가 없습니다.`);
+        }
+
+        const name = userInfo.name;
+        const replaceN = (s) => s.replace(/\{\{USER_NAME\}\}/g, name);
+
+        const jsonData = {
+            character_name: entry.character_name,
+            title: entry.title,
+            description: replaceN(entry.description),
+            dominant_element: dominantElement,
+            sipsung: exactSipsung,
+            chemistry: {
+                good: replaceN(entry.chemistry.good),
+                bad: replaceN(entry.chemistry.bad),
+            },
+            reason: key,
+        };
+
+        console.log(`\n============================`);
+        console.log(`[캐릭터 매칭 결과]`);
+        console.log(`주도 오행: ${dominantElement} | 십성: ${exactSipsung}`);
+        console.log(`추천 캐릭터: ${jsonData.character_name}`);
+        console.log(`============================\n`);
+
+        res.json(jsonData);
 
     } catch (error) {
         console.error("서버 에러 발생:", error);
