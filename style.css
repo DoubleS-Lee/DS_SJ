@@ -160,6 +160,14 @@ body.theme-onepiece .info-overlay {
     background: linear-gradient(to top, rgba(30, 60, 114, 0.9), transparent);
 }
 
+body.theme-onepiece .card-bottom {
+    bottom: 5%;
+}
+
+body.theme-shingeki .card-bottom {
+    bottom: 7%;
+}
+
 .glass-panel {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
