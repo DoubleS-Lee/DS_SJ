@@ -44,8 +44,10 @@ let currentTheme = new URLSearchParams(window.location.search).get('theme') || '
 
 function getCharacterImage(text) {
     let imgUrl = characterImages['default'] || `./images/${currentTheme}/default.png`;
+    // chemistry 형식 "캐릭터명 : 이유" 인 경우 콜론 앞 이름만 사용
+    const lookupText = text && text.includes(' : ') ? text.split(' : ')[0].trim() : text;
     for (const [key, url] of Object.entries(characterImages)) {
-        if (key !== 'default' && text && text.includes(key)) {
+        if (key !== 'default' && lookupText && lookupText.includes(key)) {
             imgUrl = url;
             break;
         }
