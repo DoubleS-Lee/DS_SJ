@@ -1,11 +1,11 @@
 // ------------------------------------------------------------------
 // 1. Configuration & Global State
 // ------------------------------------------------------------------
-// !!! 카카오 디벨로퍼스에서 발급받은 'JavaScript 키'를 아래에 넣으세요 !!!
+const KAKAO_JS_KEY = 'f36810396616a494fcc94b271ab7e2ed';
+
 try {
     if (window.Kakao && !window.Kakao.isInitialized()) {
-        window.Kakao.init('f36810396616a494fcc94b271ab7e2ed'); // 예: '1234567890abcdef...'
-        // console.log("Kakao SDK Initialized");
+        window.Kakao.init(KAKAO_JS_KEY);
     } else if (!window.Kakao) {
         console.warn("Kakao SDK 로드 실패: 광고 차단기 등의 문제일 수 있습니다.");
     }
@@ -264,28 +264,47 @@ elements.btnRetry.addEventListener('click', () => {
     });
 });
 
-async function downloadSection(element, filenamePrefix, buttonEl) {
+async function downloadSection(element, filenamePrefix, buttonEl, keepRatio = false, instagram = false) {
     if (!element) return;
-    
+
     const timestamp = Date.now();
     const originalText = buttonEl.innerHTML;
     buttonEl.innerHTML = "저장 중...";
     buttonEl.disabled = true;
 
     try {
-        const canvas = await html2canvas(element, { 
-            scale: 5, 
+        const canvas = await html2canvas(element, {
+            scale: 5,
             useCORS: true,
             backgroundColor: '#0f0c29',
             allowTaint: true
         });
 
+        const targetWidth = 800;
+        let targetHeight, drawY, drawH;
+
+        if (instagram) {
+            // 4:5 비율 (800x1000), 콘텐츠를 상하 가운데 정렬
+            targetHeight = 1000;
+            drawH = Math.round(canvas.height * (targetWidth / canvas.width));
+            drawY = Math.round((targetHeight - drawH) / 2);
+        } else {
+            targetHeight = keepRatio ? Math.round(canvas.height * (targetWidth / canvas.width)) : 800;
+            drawH = targetHeight;
+            drawY = 0;
+        }
+
         const targetCanvas = document.createElement('canvas');
-        targetCanvas.width = 800;
-        targetCanvas.height = 800;
+        targetCanvas.width = targetWidth;
+        targetCanvas.height = targetHeight;
         const ctx = targetCanvas.getContext('2d');
-        
-        ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, 800, 800);
+
+        if (instagram) {
+            ctx.fillStyle = '#0f0c29';
+            ctx.fillRect(0, 0, targetWidth, targetHeight);
+        }
+
+        ctx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, drawY, targetWidth, drawH);
 
         const link = document.createElement('a');
         link.download = `${filenamePrefix}_${currentTheme}_${timestamp}.jpg`;
@@ -462,7 +481,7 @@ elements.btnShareKakao.addEventListener('click', () => {
     }
     if (!window.Kakao.isInitialized()) {
         try {
-            window.Kakao.init('f36810396616a494fcc94b271ab7e2ed');
+            window.Kakao.init(KAKAO_JS_KEY);
         } catch (e) {
             alert('카카오톡 공유 기능 초기화에 실패했습니다.');
             return;

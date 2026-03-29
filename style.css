@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
     font-family: 'JeongseonArirang';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/JSArirang-RegularA1.woff') format('woff');
     font-weight: normal;
@@ -161,11 +161,16 @@ body.theme-onepiece .info-overlay {
 }
 
 body.theme-onepiece .card-bottom {
-    bottom: 5%;
+    bottom: 7%;
 }
 
 body.theme-shingeki .card-bottom {
-    bottom: 7%;
+    bottom: 3%;
+}
+
+body.theme-onepiece .card-footer,
+body.theme-shingeki .card-footer {
+    margin-bottom: 6px;
 }
 
 .glass-panel {
@@ -341,17 +346,17 @@ input, select {
 }
 
 .additional-info { width: 100%; margin-top: 15px; }
-.saju-desc-box { position: relative; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; margin-bottom: 15px; backdrop-filter: blur(5px); border: 1px solid var(--glass-border); aspect-ratio: 1080 / 1080; display: flex; flex-direction: column; justify-content: center; }
-.saju-desc-box h3 { 
+.saju-desc-box { position: relative; background: rgba(255,255,255,0.1); padding: 14px; border-radius: 10px; margin-bottom: 15px; backdrop-filter: blur(5px); border: 1px solid var(--glass-border); aspect-ratio: 1080 / 1080; display: flex; flex-direction: column; justify-content: flex-start; overflow: hidden; }
+.saju-desc-box h3 {
     font-family: 'Noto Sans KR', sans-serif;
-    font-size: 1.8rem; 
+    font-size: 1.4rem;
     font-weight: 700;
     color: #ffb8b8;
-    margin-bottom: 15px; 
-    text-align: center; 
+    margin-bottom: 10px;
+    text-align: center;
     letter-spacing: 1px;
 }
-.saju-desc-box p { font-size: 0.95rem; line-height: 1.6; word-break: keep-all; }
+.saju-desc-box p { font-size: 0.9rem; line-height: 1.6; word-break: keep-all; }
 
 .chemistry-box { display: flex; flex-direction: column; gap: 15px; margin-bottom: 15px; }
 .chem-item { 
